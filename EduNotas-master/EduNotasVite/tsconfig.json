@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",  // Asegura que las rutas comiencen desde el directorio raíz del proyecto
+    "paths": {
+      "@components/*": ["src/components/*"]  // Alias para componentes
+    },
+    "types": ["node"]  // Añade las declaraciones de tipos de Node.js
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
