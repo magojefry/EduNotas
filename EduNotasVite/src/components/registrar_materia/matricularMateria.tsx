@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import perfilImg from "../../images/perfil.png";
+
 
 const MatricularMateria = () => {
     const [studentName, setStudentName] = useState("");
@@ -13,9 +13,18 @@ const MatricularMateria = () => {
         materiasPerdidas: 2
     });
 
-    const handleBuscarAlumno = () => {
-
-        console.log("Buscando alumno...");
+    const handleBuscarAlumno = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/buscar-estudiante/${studentName}`);
+            if (response.ok) {
+                const data = await response.json();
+                setStudentData(data);
+            } else {
+                console.error('Estudiante no encontrado');
+            }
+        } catch (error) {
+            console.error('Error al buscar el estudiante', error);
+        }
     };
 
     return (
@@ -64,7 +73,7 @@ const MatricularMateria = () => {
                 </div>
                 <div className="flex justify-center">
                     <img
-                        src="perfilImg"
+
                         className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
                     />
                 </div>
