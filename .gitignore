@@ -4,5 +4,6 @@ venv/
 # Otros archivos que podrían ser útiles ignorar en Django
 *.pyc
 __pycache__/
+EduNotasDjango/__pycache__/
 db.sqlite3
 .env
