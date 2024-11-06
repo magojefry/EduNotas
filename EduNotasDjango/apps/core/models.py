@@ -157,9 +157,22 @@ class Usuario(AbstractUser):
     
 
 class Materia(models.Model):
+    NIVELES_ESTUDIO = [
+    ('primaria', 'Educacion Primaria'),
+    ('secundaria', 'Educacion Secundaria'),
+    ('tecnico', 'Tecnico Superior'),
+    ('tecnologo', 'Tecnologo'),
+    ('pregrado', 'Pregrado'),
+    ('posgrado', 'Posgrado'),
+    ('maestria', 'Maestria'),
+    ('doctorado', 'Doctorado'),
+    ]
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
     creador = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    habilitable = models.BooleanField(default=True)
+    nivel_educativo = models.CharField(max_length=100, choices=NIVELES_ESTUDIO)
+    fecha = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.nombre
