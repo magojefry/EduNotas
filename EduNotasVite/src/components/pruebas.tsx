@@ -1,7 +1,5 @@
-const Pruebas = () => {
+export function Pruebas() {
   return (
-    <div>pruebas</div>
+    <div>Hola mundo cruel</div>
   )
 }
-
-export default Pruebas;

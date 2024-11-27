@@ -4,10 +4,10 @@ import Login from "./components/login/login";
 import LoginRecuperar from "./components/login/loginRecuperar";
 import MisionVision from "./components/login/misionVision";
 import NuevaContrasena from "./components/login/nuevaContrasena";
-import Pruebas from "./components/pruebas";
+import { Pruebas } from "./components/pruebas";
 import ActualizarUsuarioAdmin from "./components/rol_administrador/actualizarUsuarioAdmin";
 import MatricularMateriaAdmin from "./components/rol_administrador/matricularMateriaAdmin";
-import RegistroMateriaAdmin from "./components/rol_administrador/registroMateriaAdmin";
+import {RegistroMateriaAdmin} from "./components/rol_administrador/registroMateriaAdmin";
 import RegistroUsuarioNuevoAdmin from "./components/rol_administrador/registroUsuarioNuevoAdmin";
 import VerListaUsuariosAdmin from "./components/rol_administrador/verListaUsuariosAdmin";
 import HorarioEstudiante from "./components/rol_estudiante/horarioEstudiante";
@@ -55,9 +55,9 @@ function App () {
       <ActualizarUsuarioAdmin/>
       <RegistroUsuarioNuevoAdmin/>
       */}
-
       <Pruebas/>
-
+      <RegistroMateriaAdmin/>
+      
     </>
   )
 }
