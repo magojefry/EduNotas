@@ -1,22 +1,21 @@
 import axios from 'axios'
 
-const API_URL = axios.create ({
+const api_axios = axios.create ({
   baseURL: 'http://127.0.0.1:8000/administrador/regmat/mate/'
 }) 
 
-type Mate = {
+export const getAllMate = () => {
+  return api_axios.get('/')
+}
+
+interface Mate {
   nombre: string
   descripcion: string
   habilitable: boolean
   nivel_educativo: string
-};
-
-export const getAllMate = () => {
-  return axios.get('http://127.0.0.1:8000/administrador/regmat/mate/')
+  creador: number
 }
 
-{/*
-export const postMate = (mate) => {
-  return API_URL.post('/', mate)
+export const createMate = (mate: Mate) => {
+  return api_axios.post('/', mate) 
 }
-   */}

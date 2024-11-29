@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { getAllMate } from "../../api/regMateAdmin.api" 
+import { useForm, SubmitHandler } from "react-hook-form"
+import { getAllMate, createMate } from "../../api/regMateAdmin.api" 
 
 interface Materia {
   id: number
@@ -12,7 +12,13 @@ interface Materia {
   creador: number
 }
 
-
+interface Mate {
+  nombre: string
+  descripcion: string
+  habilitable: boolean
+  nivel_educativo: string
+  creador: number
+}
 
 export function RegistroMateriaAdmin () {
   const [mates, setMates] = useState<Materia[]>([])
@@ -27,27 +33,37 @@ export function RegistroMateriaAdmin () {
   },[])
 
   {/*Metodo Post*/}
-  const { register, handleSubmit, formState: { errors} } = useForm()
+  const { register, handleSubmit, formState: { errors} } = useForm<Mate>()
 
-  const onsubmit = handleSubmit(data =>{
+  const onSubmit: SubmitHandler<Mate> = ( async data =>{
 
-    return console.log(data)
+    const parsedData = {
+      ...data,
+      habilitable: data.habilitable === true , creador: 1
+    }
+    console.log("Datos enviados a la API:", parsedData);
+    try {
+      const res = await createMate(parsedData)
+      console.log(res)
+      const getRes = await getAllMate();  // Obtener los mates más actualizados
+      setMates(getRes.data);
+    } catch (error) {
+      console.error('Error al crear el Mate:', error)
+    }
   })
 
   const thtable = 'px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 border border-gray-300'
   const tdtable = 'px-4 py-3 border border-gray-300'
 
   const nivelesEducativos = [
-    { value: "superior", label: "Superior" },
-    { value: "secundario", label: "Secundario" },
-    { value: "primario", label: "Primario" },
-    { value: "inicial", label: "Inicial" },
+    { value: "primaria", label: "Educación Primaria" },
+    { value: "secundaria", label: "Educación Secundaria" },
     { value: "tecnico", label: "Técnico Superior" },
     { value: "tecnologo", label: "Tecnólogo" },
     { value: "pregrado", label: "Pregrado" },
     { value: "posgrado", label: "Posgrado" },
     { value: "maestria", label: "Maestría" },
-    { value: "doctorado", label: "Doctorado" }
+    { value: "doctorado", label: "Doctorado" },
   ]
   
   const Habilitable = [
@@ -69,36 +85,41 @@ export function RegistroMateriaAdmin () {
                   <button type="button" className="text-gray-700 bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">Buscar</button>
               </div>*/}
 
-          <form onSubmit={onsubmit} className="p-8 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
+          <form onSubmit={ handleSubmit(onSubmit) } className="p-8 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
             <div className="grid gap-6 sm:grid-cols-2">
                 <div className="flex items-center">
                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 w-1/3">Nombre de Materia</label>
                     <input type="text" id="name" className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5"
-                    placeholder="Materia" {...register("Materia", {required: true,     
+                    placeholder="Materia" {...register("nombre", {required: true,     
                       maxLength: 5 })} />
-                      { errors.Materia && <span>Campo requeridoo</span>}
+                      { errors.nombre && <span>Campo requeridoo</span>}
                 </div>
 
                 <div className="flex items-center">
-                    <label htmlFor="habilitable" className="block mb-2 text-sm font-medium text-gray-900 w-1/3">Habilitable</label>
-                    <select id="habilitable" className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5"
-                    {...register("Habilitable", {required:true})}>
-                      <option value="">Habilitable</option>
-                        {Habilitable.map((nivel) => (
-                          <option key={nivel.value} value={nivel.value}>
-                            {nivel.label}
-                          </option>
-                        ))}
-                        
-                    </select>
-                    { errors.Habilitable && <span>Campo requerido</span>}
-                </div>
+                  <label htmlFor="habilitable" className="block mb-2 text-sm font-medium text-gray-900 w-1/3">
+                    Habilitable
+                  </label>
+                  <select
+                    id="habilitable"
+                    className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5"
+                    {...register("habilitable", { required: true })}
+                  >
+                    <option value="">Selecciona</option>
+                    {Habilitable.map((nivel) => (
+                      <option key={nivel.value} value={nivel.value}>
+                        {nivel.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.habilitable && <span>Campo requerido</span>}
+                  </div>
+
 
                 {/*Esta en prueba, se nececita mejorar esta lista*/}
                 <div className="flex items-center">
                     <label htmlFor="nivel-educativo" className="block mb-2 text-sm font-medium text-gray-900 w-1/3">Nivel Educativo</label>
                     <select id="nivel-educativo" className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5"
-                    {...register("nivelEducativo", {required:true})}>
+                    {...register("nivel_educativo", {required:true})}>
                       
                       <option value="">Nivel Educativo</option>
                         {nivelesEducativos.map((nivel) => (
@@ -108,20 +129,20 @@ export function RegistroMateriaAdmin () {
                         ))}
                         
                     </select>
-                    { errors.nivelEducativo && <span>Campo requerido</span>}
+                    { errors.nivel_educativo && <span>Campo requerido</span>}
                 </div>
                 
                 <div className="flex items-center">
                     <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 w-1/3">Descripción</label>
                     <textarea id="description" className="p-2.5 w-2/3 text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" 
-                    placeholder="Descripción" {...register("Descripción", {required:true, maxLength: 10})}></textarea>
-                    { errors.Descripción && <span>Campo requerido</span>}
+                    placeholder="Descripción" {...register("descripcion", {required:true, maxLength: 10})}></textarea>
+                    { errors.descripcion && <span>Campo requerido</span>}
                 </div>
             </div>
             
             <div className="flex justify-between items-center mt-6">
               <div className="flex space-x-4">
-                  <button type="submit" className="text-gray-700 bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">Guardar</button>
+                  <button type="submit" name="guardarMate" className="text-gray-700 bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">Guardar</button>
                   
                   {/*
                   <button type="button" className="text-gray-700 bg-amber-500 border-0 py-2 px-4 focus:outline-none hover:bg-amber-400 rounded">Actualizar</button>
